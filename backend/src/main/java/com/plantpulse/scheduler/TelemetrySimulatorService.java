@@ -79,7 +79,7 @@ public class TelemetrySimulatorService {
         return Math.round((baseline + delta) * 10.0) / 10.0;
     }
 
-    private void evaluateThresholds(Machine machine, double temperature, double vibration) {
+    void evaluateThresholds(Machine machine, double temperature, double vibration) {
         if (temperature >= tempCritical || vibration >= vibCritical) {
             raiseAlert(machine, AlertSeverity.CRITICAL,
                     "Critical reading on %s: %.1f°C / %.1fmm/s".formatted(machine.getName(), temperature, vibration),
