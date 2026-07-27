@@ -34,25 +34,25 @@ public class DemoDataSeeder implements CommandLineRunner {
         machineRepository.save(Machine.builder()
                 .name("CNC Lathe #1").type("CNC Lathe").location("Bay A")
                 .status(MachineStatus.OPERATIONAL)
-                .baselineTemperature(58).baselineVibration(2.2)
+                .baselineTemperature(58.0).baselineVibration(2.2)
                 .build());
 
         machineRepository.save(Machine.builder()
                 .name("Hydraulic Press #2").type("Press").location("Bay A")
                 .status(MachineStatus.OPERATIONAL)
-                .baselineTemperature(64).baselineVibration(3.1)
+                .baselineTemperature(64.0).baselineVibration(3.1)
                 .build());
 
         machineRepository.save(Machine.builder()
                 .name("Conveyor Line 3").type("Conveyor").location("Bay B")
                 .status(MachineStatus.OPERATIONAL)
-                .baselineTemperature(48).baselineVibration(1.6)
+                .baselineTemperature(48.0).baselineVibration(1.6)
                 .build());
 
         machineRepository.save(Machine.builder()
                 .name("Industrial Compressor").type("Compressor").location("Utility Room")
                 .status(MachineStatus.OPERATIONAL)
-                .baselineTemperature(70).baselineVibration(4.0)
+                .baselineTemperature(70.0).baselineVibration(4.0)
                 .build());
 
         technicianRepository.save(Technician.builder()
