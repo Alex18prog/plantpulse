@@ -1,12 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from './lib/api';
 import { useRealtime } from './lib/useRealtime';
+import { useAuth } from './context/AuthContext';
 import { StatusBar } from './components/StatusBar';
 import { MachineCard } from './components/MachineCard';
 import { AlertsFeed } from './components/AlertsFeed';
 import { WorkOrdersBoard } from './components/WorkOrdersBoard';
+import { LoginPage } from './components/LoginPage';
 
-function App() {
+function Dashboard() {
+  const { email, role, logout } = useAuth();
   const { data: machines = [] } = useQuery({ queryKey: ['machines'], queryFn: api.machines.list });
   const { data: workOrders = [] } = useQuery({
     queryKey: ['work-orders'],
@@ -18,7 +21,14 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      <StatusBar connected={connected} machineCount={machines.length} activeAlerts={alerts.length} />
+      <StatusBar
+        connected={connected}
+        machineCount={machines.length}
+        activeAlerts={alerts.length}
+        userEmail={email!}
+        userRole={role!}
+        onLogout={logout}
+      />
 
       <main className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-6">
         <section>
@@ -51,6 +61,11 @@ function App() {
       </main>
     </div>
   );
+}
+
+function App() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Dashboard /> : <LoginPage />;
 }
 
 export default App;

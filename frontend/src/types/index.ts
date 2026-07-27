@@ -3,6 +3,13 @@ export type AlertSeverity = 'WARNING' | 'CRITICAL';
 export type WorkOrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DONE';
 export type WorkOrderType = 'PREVENTIVE' | 'CORRECTIVE';
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type Role = 'ADMIN' | 'TECHNICIAN';
+
+export interface LoginResponse {
+  token: string;
+  email: string;
+  role: Role;
+}
 
 export interface Machine {
   id: number;
