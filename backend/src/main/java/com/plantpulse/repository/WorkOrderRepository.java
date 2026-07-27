@@ -9,4 +9,5 @@ import java.util.List;
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     List<WorkOrder> findByStatus(WorkOrderStatus status);
     List<WorkOrder> findByMachineId(Long machineId);
+    List<WorkOrder> findByTechnicianId(Long technicianId);
 }

@@ -5,6 +5,7 @@ import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.SparePartRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/spare-parts")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class SparePartController {
 
     private final SparePartRepository sparePartRepository;

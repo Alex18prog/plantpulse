@@ -4,6 +4,7 @@ import com.plantpulse.domain.Technician;
 import com.plantpulse.repository.TechnicianRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/technicians")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class TechnicianController {
 
     private final TechnicianRepository technicianRepository;

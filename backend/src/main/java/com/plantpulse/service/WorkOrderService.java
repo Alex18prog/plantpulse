@@ -1,13 +1,16 @@
 package com.plantpulse.service;
 
 import com.plantpulse.domain.Machine;
+import com.plantpulse.domain.User;
 import com.plantpulse.domain.WorkOrder;
 import com.plantpulse.domain.enums.Priority;
+import com.plantpulse.domain.enums.Role;
 import com.plantpulse.domain.enums.WorkOrderStatus;
 import com.plantpulse.domain.enums.WorkOrderType;
 import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.WorkOrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,22 +22,37 @@ public class WorkOrderService {
 
     private final WorkOrderRepository workOrderRepository;
 
-    public List<WorkOrder> findAll() {
-        return workOrderRepository.findAll();
+    /** ADMIN sees every work order; TECHNICIAN sees only the ones assigned to their linked Technician record. */
+    public List<WorkOrder> findAllVisibleTo(User currentUser) {
+        if (currentUser.getRole() == Role.ADMIN) {
+            return workOrderRepository.findAll();
+        }
+        return workOrderRepository.findByTechnicianId(currentUser.getTechnician().getId());
     }
 
     public WorkOrder create(WorkOrder workOrder) {
         return workOrderRepository.save(workOrder);
     }
 
-    public WorkOrder updateStatus(Long id, WorkOrderStatus status) {
+    public WorkOrder updateStatus(Long id, WorkOrderStatus status, User currentUser) {
         WorkOrder order = workOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Work order not found: " + id));
+
+        if (currentUser.getRole() == Role.TECHNICIAN && !isAssignedTo(order, currentUser)) {
+            throw new AccessDeniedException("Not assigned to this work order");
+        }
+
         order.setStatus(status);
         if (status == WorkOrderStatus.DONE) {
             order.setClosedAt(Instant.now());
         }
         return workOrderRepository.save(order);
+    }
+
+    private boolean isAssignedTo(WorkOrder order, User currentUser) {
+        return order.getTechnician() != null
+                && currentUser.getTechnician() != null
+                && order.getTechnician().getId().equals(currentUser.getTechnician().getId());
     }
 
     /**

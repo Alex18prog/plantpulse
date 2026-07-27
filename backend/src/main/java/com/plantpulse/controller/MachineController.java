@@ -6,6 +6,7 @@ import com.plantpulse.repository.MachineRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,14 @@ public class MachineController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Machine create(@Valid @RequestBody Machine machine) {
         machine.setId(null);
         return machineRepository.save(machine);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Machine update(@PathVariable Long id, @Valid @RequestBody Machine payload) {
         Machine existing = machineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
@@ -43,6 +46,7 @@ public class MachineController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (!machineRepository.existsById(id)) {
