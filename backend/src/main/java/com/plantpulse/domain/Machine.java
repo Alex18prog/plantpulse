@@ -2,6 +2,8 @@ package com.plantpulse.domain;
 
 import com.plantpulse.domain.enums.MachineStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,14 +23,17 @@ public class Machine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
+    @NotBlank
     @Column(nullable = false)
     private String type;
 
     private String location;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MachineStatus status;
@@ -36,9 +41,11 @@ public class Machine {
     private LocalDate installDate;
 
     // Baseline operating values used by the telemetry simulator
+    @NotNull
     @Builder.Default
     private Double baselineTemperature = 55.0;
 
+    @NotNull
     @Builder.Default
     private Double baselineVibration = 2.5;
 }

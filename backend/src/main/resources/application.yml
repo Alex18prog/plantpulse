@@ -5,6 +5,15 @@ spring:
   profiles:
     active: dev
 
+plantpulse:
+  telemetry:
+    interval-ms: 3000
+  thresholds:
+    temperature-warning: 75.0
+    temperature-critical: 90.0
+    vibration-warning: 6.0
+    vibration-critical: 9.0
+
 ---
 spring:
   config:
@@ -40,12 +49,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-
-plantpulse:
-  telemetry:
-    interval-ms: 3000
-  thresholds:
-    temperature-warning: 75.0
-    temperature-critical: 90.0
-    vibration-warning: 6.0
-    vibration-critical: 9.0

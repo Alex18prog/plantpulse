@@ -2,6 +2,7 @@ package com.plantpulse.controller;
 
 import com.plantpulse.domain.Technician;
 import com.plantpulse.repository.TechnicianRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class TechnicianController {
     }
 
     @PostMapping
-    public Technician create(@RequestBody Technician technician) {
+    public Technician create(@Valid @RequestBody Technician technician) {
         technician.setId(null);
         return technicianRepository.save(technician);
     }

@@ -3,6 +3,7 @@ package com.plantpulse.controller;
 import com.plantpulse.domain.Machine;
 import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.MachineRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,13 @@ public class MachineController {
     }
 
     @PostMapping
-    public Machine create(@RequestBody Machine machine) {
+    public Machine create(@Valid @RequestBody Machine machine) {
         machine.setId(null);
         return machineRepository.save(machine);
     }
 
     @PutMapping("/{id}")
-    public Machine update(@PathVariable Long id, @RequestBody Machine payload) {
+    public Machine update(@PathVariable Long id, @Valid @RequestBody Machine payload) {
         Machine existing = machineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
         payload.setId(existing.getId());

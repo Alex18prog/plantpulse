@@ -3,6 +3,7 @@ package com.plantpulse.controller;
 import com.plantpulse.domain.WorkOrder;
 import com.plantpulse.domain.enums.WorkOrderStatus;
 import com.plantpulse.service.WorkOrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class WorkOrderController {
     }
 
     @PostMapping
-    public WorkOrder create(@RequestBody WorkOrder workOrder) {
+    public WorkOrder create(@Valid @RequestBody WorkOrder workOrder) {
         workOrder.setId(null);
         return workOrderService.create(workOrder);
     }

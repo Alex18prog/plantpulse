@@ -4,6 +4,8 @@ import com.plantpulse.domain.enums.Priority;
 import com.plantpulse.domain.enums.WorkOrderStatus;
 import com.plantpulse.domain.enums.WorkOrderType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class WorkOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "machine_id", nullable = false)
     private Machine machine;
@@ -31,20 +34,24 @@ public class WorkOrder {
     @JoinColumn(name = "technician_id")
     private Technician technician;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WorkOrderType type;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
     private WorkOrderStatus status = WorkOrderStatus.PENDING;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
     private Priority priority = Priority.MEDIUM;
 
+    @NotBlank
     @Column(nullable = false)
     private String description;
 

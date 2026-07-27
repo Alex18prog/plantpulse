@@ -3,6 +3,7 @@ package com.plantpulse.controller;
 import com.plantpulse.domain.SparePart;
 import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.SparePartRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class SparePartController {
     }
 
     @PostMapping
-    public SparePart create(@RequestBody SparePart sparePart) {
+    public SparePart create(@Valid @RequestBody SparePart sparePart) {
         sparePart.setId(null);
         return sparePartRepository.save(sparePart);
     }
