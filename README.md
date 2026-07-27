@@ -170,24 +170,24 @@ leave room to keep building — a portfolio project is more convincing when
 the commit history shows it growing. Suggested order:
 
 **Phase 1 — Harden what exists**
-- [ ] Unit tests for `WorkOrderService` and the threshold logic in
+- [x] Unit tests for `WorkOrderService` and the threshold logic in
       `TelemetrySimulatorService` (JUnit 5 + Mockito)
-- [ ] `@ControllerAdvice` global exception handler (404s currently rely on
+- [x] `@ControllerAdvice` global exception handler (404s currently rely on
       ad-hoc `Optional` handling)
-- [ ] Bean Validation (`@NotBlank`, `@Min`, etc.) on entities/DTOs and a
+- [x] Bean Validation (`@NotBlank`, `@Min`, etc.) on entities/DTOs and a
       request-body validation layer for the controllers
 
 **Phase 2 — Auth**
-- [ ] Spring Security + JWT, two roles: `ADMIN` (manage machines/technicians)
+- [x] Spring Security + JWT, two roles: `ADMIN` (manage machines/technicians)
       and `TECHNICIAN` (view + update assigned work orders)
-- [ ] Login page and protected routes on the frontend
+- [x] Login page and protected routes on the frontend
 
 **Phase 3 — Deepen the domain**
-- [ ] Spare parts inventory page with low-stock highlighting (the entity and
+- [x] Spare parts inventory page with low-stock highlighting (the entity and
       endpoint already exist — `SparePart.isBelowThreshold()` — just needs a UI)
-- [ ] Preventive maintenance scheduling (recurring work orders by calendar
+- [x] Preventive maintenance scheduling (recurring work orders by calendar
       or by machine run-hours)
-- [ ] Historical telemetry: persist readings (or a downsampled rollup) so a
+- [x] Historical telemetry: persist readings (or a downsampled rollup) so a
       machine detail page can show trends over days/weeks, not just the last
       20 live points
 
