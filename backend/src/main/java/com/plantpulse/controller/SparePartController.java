@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/spare-parts")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class SparePartController {
 
     private final SparePartRepository sparePartRepository;
@@ -24,12 +23,14 @@ public class SparePartController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public SparePart create(@Valid @RequestBody SparePart sparePart) {
         sparePart.setId(null);
         return sparePartRepository.save(sparePart);
     }
 
     @PatchMapping("/{id}/stock")
+    @PreAuthorize("hasRole('ADMIN')")
     public SparePart adjustStock(@PathVariable Long id, @RequestParam int delta) {
         SparePart part = sparePartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Spare part not found: " + id));

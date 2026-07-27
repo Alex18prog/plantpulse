@@ -1,4 +1,4 @@
-import type { LoginResponse, Machine, WorkOrder } from '../types';
+import type { LoginResponse, Machine, SparePart, WorkOrder } from '../types';
 
 let authToken: string | null = null;
 let onUnauthorized: (() => void) | null = null;
@@ -45,5 +45,10 @@ export const api = {
   alerts: {
     listActive: () => request(`/alerts`),
     resolve: (id: number) => request(`/alerts/${id}/resolve`, { method: 'PATCH' }),
+  },
+  spareParts: {
+    list: () => request<SparePart[]>('/spare-parts'),
+    adjustStock: (id: number, delta: number) =>
+      request<SparePart>(`/spare-parts/${id}/stock?delta=${delta}`, { method: 'PATCH' }),
   },
 };

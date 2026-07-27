@@ -1,5 +1,11 @@
 import { Activity, LogOut } from 'lucide-react';
+import { NavLink } from 'react-router';
 import type { Role } from '../types';
+
+const NAV_LINKS = [
+  { to: '/', label: 'Dashboard' },
+  { to: '/spare-parts', label: 'Spare parts' },
+];
 
 export function StatusBar({ connected, machineCount, activeAlerts, userEmail, userRole, onLogout }: {
   connected: boolean;
@@ -11,12 +17,31 @@ export function StatusBar({ connected, machineCount, activeAlerts, userEmail, us
 }) {
   return (
     <header className="border-b border-steel bg-panel px-6 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-2.5">
-        <Activity size={20} style={{ color: 'var(--color-signal-amber)' }} />
-        <div>
-          <h1 className="font-display font-bold text-lg leading-none text-ink-100">PlantPulse</h1>
-          <p className="text-[11px] text-ink-500 font-mono">Condition monitoring &amp; maintenance</p>
+      <div className="flex items-center gap-8">
+        <div className="flex items-center gap-2.5">
+          <Activity size={20} style={{ color: 'var(--color-signal-amber)' }} />
+          <div>
+            <h1 className="font-display font-bold text-lg leading-none text-ink-100">PlantPulse</h1>
+            <p className="text-[11px] text-ink-500 font-mono">Condition monitoring &amp; maintenance</p>
+          </div>
         </div>
+
+        <nav className="flex items-center gap-4">
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === '/'}
+              className={({ isActive }) =>
+                `text-xs font-mono uppercase tracking-wide transition-colors ${
+                  isActive ? 'text-ink-100' : 'text-ink-500 hover:text-ink-300'
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
       <div className="flex items-center gap-6 font-mono text-xs">
