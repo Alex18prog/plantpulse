@@ -1,9 +1,10 @@
 package com.plantpulse.controller;
 
 import com.plantpulse.domain.Machine;
+import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.MachineRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +22,9 @@ public class MachineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Machine> findById(@PathVariable Long id) {
+    public Machine findById(@PathVariable Long id) {
         return machineRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
     }
 
     @PostMapping
@@ -34,21 +34,19 @@ public class MachineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Machine> update(@PathVariable Long id, @RequestBody Machine payload) {
-        return machineRepository.findById(id)
-                .map(existing -> {
-                    payload.setId(existing.getId());
-                    return ResponseEntity.ok(machineRepository.save(payload));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Machine update(@PathVariable Long id, @RequestBody Machine payload) {
+        Machine existing = machineRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
+        payload.setId(existing.getId());
+        return machineRepository.save(payload);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         if (!machineRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Machine not found: " + id);
         }
         machineRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

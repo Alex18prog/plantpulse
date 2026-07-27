@@ -6,6 +6,7 @@ import com.plantpulse.domain.enums.MachineStatus;
 import com.plantpulse.domain.enums.Priority;
 import com.plantpulse.domain.enums.WorkOrderStatus;
 import com.plantpulse.domain.enums.WorkOrderType;
+import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.WorkOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,11 +107,11 @@ class WorkOrderServiceTest {
     }
 
     @Test
-    void updateStatus_unknownId_throwsIllegalArgumentException() {
+    void updateStatus_unknownId_throwsResourceNotFoundException() {
         when(workOrderRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> workOrderService.updateStatus(99L, WorkOrderStatus.DONE))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("99");
 
         verify(workOrderRepository, never()).save(any());

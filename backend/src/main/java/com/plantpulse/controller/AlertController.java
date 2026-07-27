@@ -1,6 +1,7 @@
 package com.plantpulse.controller;
 
 import com.plantpulse.domain.Alert;
+import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.AlertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AlertController {
     @PatchMapping("/{id}/resolve")
     public Alert resolve(@PathVariable Long id) {
         Alert alert = alertRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Alert not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + id));
         alert.setResolved(true);
         return alertRepository.save(alert);
     }

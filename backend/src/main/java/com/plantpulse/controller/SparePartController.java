@@ -1,6 +1,7 @@
 package com.plantpulse.controller;
 
 import com.plantpulse.domain.SparePart;
+import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.SparePartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class SparePartController {
     @PatchMapping("/{id}/stock")
     public SparePart adjustStock(@PathVariable Long id, @RequestParam int delta) {
         SparePart part = sparePartRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Spare part not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Spare part not found: " + id));
         part.setStockQuantity(part.getStockQuantity() + delta);
         return sparePartRepository.save(part);
     }

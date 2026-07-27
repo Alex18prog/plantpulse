@@ -5,6 +5,7 @@ import com.plantpulse.domain.WorkOrder;
 import com.plantpulse.domain.enums.Priority;
 import com.plantpulse.domain.enums.WorkOrderStatus;
 import com.plantpulse.domain.enums.WorkOrderType;
+import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.WorkOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class WorkOrderService {
 
     public WorkOrder updateStatus(Long id, WorkOrderStatus status) {
         WorkOrder order = workOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Work order not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Work order not found: " + id));
         order.setStatus(status);
         if (status == WorkOrderStatus.DONE) {
             order.setClosedAt(Instant.now());
