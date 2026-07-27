@@ -36,6 +36,9 @@ export const api = {
   },
   machines: {
     list: () => request<Machine[]>('/machines'),
+    get: (id: number) => request<Machine>(`/machines/${id}`),
+    update: (id: number, machine: Machine) =>
+      request<Machine>(`/machines/${id}`, { method: 'PUT', body: JSON.stringify(machine) }),
   },
   workOrders: {
     list: () => request<WorkOrder[]>('/work-orders'),

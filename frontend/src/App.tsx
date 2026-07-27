@@ -4,6 +4,7 @@ import { LoginPage } from './components/LoginPage';
 import { AppLayout } from './components/AppLayout';
 import { Dashboard } from './components/Dashboard';
 import { SparePartsPage } from './components/SparePartsPage';
+import { MachineDetailPage } from './components/MachineDetailPage';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -17,6 +18,7 @@ function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/spare-parts" element={<SparePartsPage />} />
+        <Route path="/machines/:id" element={<MachineDetailPage />} />
       </Route>
     </Routes>
   );

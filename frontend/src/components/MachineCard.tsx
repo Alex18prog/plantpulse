@@ -1,4 +1,5 @@
 import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
+import { Link } from 'react-router';
 import { GaugeDial } from './GaugeDial';
 import type { Machine, TelemetryMessage } from '../types';
 
@@ -20,7 +21,10 @@ export function MachineCard({ machine, latest, history }: MachineCardProps) {
   const vibration = latest?.vibration ?? machine.baselineVibration;
 
   return (
-    <div className="bg-panel border border-steel rounded-xl p-4 flex flex-col gap-3">
+    <Link
+      to={`/machines/${machine.id}`}
+      className="bg-panel border border-steel rounded-xl p-4 flex flex-col gap-3 hover:border-steel-light transition-colors"
+    >
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-display font-semibold text-ink-100 leading-tight">{machine.name}</h3>
@@ -79,6 +83,6 @@ export function MachineCard({ machine, latest, history }: MachineCardProps) {
         <span>RPM {latest?.rpm ?? '—'}</span>
         <span>#{machine.id.toString().padStart(4, '0')}</span>
       </div>
-    </div>
+    </Link>
   );
 }

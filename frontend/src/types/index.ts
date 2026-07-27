@@ -19,6 +19,8 @@ export interface Machine {
   status: MachineStatus;
   baselineTemperature: number;
   baselineVibration: number;
+  installDate: string | null;
+  maintenanceIntervalDays: number | null;
 }
 
 export interface TelemetryMessage {

@@ -2,6 +2,7 @@ package com.plantpulse.domain;
 
 import com.plantpulse.domain.enums.MachineStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -48,4 +49,8 @@ public class Machine {
     @NotNull
     @Builder.Default
     private Double baselineVibration = 2.5;
+
+    /** Calendar days between scheduled preventive maintenance visits. Null disables scheduling for this machine. */
+    @Min(1)
+    private Integer maintenanceIntervalDays;
 }

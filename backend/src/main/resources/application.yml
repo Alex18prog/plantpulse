@@ -13,6 +13,8 @@ plantpulse:
     temperature-critical: 90.0
     vibration-warning: 6.0
     vibration-critical: 9.0
+  preventive-maintenance:
+    check-interval-ms: 60000 # 1 min; demo-friendly, the condition itself only changes daily
   security:
     # Dev-only default; override via PLANTPULSE_SECURITY_JWT_SECRET in prod.
     jwt-secret: ${PLANTPULSE_JWT_SECRET:dev-only-insecure-secret-do-not-use-in-production-3f8a2c1e}
