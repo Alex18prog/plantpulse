@@ -3,6 +3,7 @@ package com.plantpulse.exception;
 import com.plantpulse.config.SecurityConfig;
 import com.plantpulse.controller.MachineController;
 import com.plantpulse.repository.MachineRepository;
+import com.plantpulse.repository.TelemetryReadingRepository;
 import com.plantpulse.security.JwtService;
 import com.plantpulse.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ class GlobalExceptionHandlerTest {
 
     @MockBean
     private MachineRepository machineRepository;
+
+    @MockBean
+    private TelemetryReadingRepository telemetryReadingRepository;
 
     // Required by the auto-registered JwtAuthenticationFilter bean, unused by these tests (@WithMockUser bypasses it).
     @MockBean

@@ -1,4 +1,4 @@
-import type { LoginResponse, Machine, SparePart, WorkOrder } from '../types';
+import type { LoginResponse, Machine, SparePart, TelemetryMessage, WorkOrder } from '../types';
 
 let authToken: string | null = null;
 let onUnauthorized: (() => void) | null = null;
@@ -39,6 +39,7 @@ export const api = {
     get: (id: number) => request<Machine>(`/machines/${id}`),
     update: (id: number, machine: Machine) =>
       request<Machine>(`/machines/${id}`, { method: 'PUT', body: JSON.stringify(machine) }),
+    telemetryHistory: (id: number) => request<TelemetryMessage[]>(`/machines/${id}/telemetry-history`),
   },
   workOrders: {
     list: () => request<WorkOrder[]>('/work-orders'),

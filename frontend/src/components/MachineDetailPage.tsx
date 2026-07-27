@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { TelemetryHistoryChart } from './TelemetryHistoryChart';
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
   OPERATIONAL: { label: 'Operational', color: 'var(--color-signal-green)' },
@@ -69,6 +70,13 @@ export function MachineDetailPage() {
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: meta.color }} />
           <span className="text-xs text-ink-300">{meta.label}</span>
         </div>
+      </div>
+
+      <div className="bg-panel border border-steel rounded-xl p-5">
+        <h3 className="font-display text-sm font-semibold text-ink-300 uppercase tracking-wider mb-4">
+          Telemetry — last 24h
+        </h3>
+        <TelemetryHistoryChart machineId={machineId} />
       </div>
 
       <div className="bg-panel border border-steel rounded-xl p-5">

@@ -2,22 +2,27 @@ package com.plantpulse.scheduler;
 
 import com.plantpulse.domain.Alert;
 import com.plantpulse.domain.Machine;
+import com.plantpulse.domain.TelemetryReading;
 import com.plantpulse.domain.enums.AlertSeverity;
 import com.plantpulse.domain.enums.MachineStatus;
 import com.plantpulse.dto.AlertMessage;
 import com.plantpulse.dto.TelemetryMessage;
 import com.plantpulse.repository.AlertRepository;
 import com.plantpulse.repository.MachineRepository;
+import com.plantpulse.repository.TelemetryReadingRepository;
 import com.plantpulse.service.WorkOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Stands in for real plant-floor sensors (temperature + vibration probes).
@@ -36,6 +41,7 @@ public class TelemetrySimulatorService {
     private final MachineRepository machineRepository;
     private final AlertRepository alertRepository;
     private final WorkOrderService workOrderService;
+    private final TelemetryReadingRepository telemetryReadingRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Value("${plantpulse.thresholds.temperature-warning}")
@@ -50,9 +56,18 @@ public class TelemetrySimulatorService {
     @Value("${plantpulse.thresholds.vibration-critical}")
     private double vibCritical;
 
+    @Value("${plantpulse.telemetry.sample-every-n-ticks:10}")
+    private int sampleEveryNTicks;
+
+    @Value("${plantpulse.telemetry.retention-hours:48}")
+    private long retentionHours;
+
+    private final AtomicLong tickCount = new AtomicLong();
+
     @Scheduled(fixedRateString = "${plantpulse.telemetry.interval-ms:3000}")
     public void tick() {
         List<Machine> machines = machineRepository.findAll();
+        boolean sampleThisTick = tickCount.incrementAndGet() % sampleEveryNTicks == 0;
 
         for (Machine machine : machines) {
             if (machine.getStatus() == MachineStatus.DOWN) {
@@ -62,12 +77,30 @@ public class TelemetrySimulatorService {
             double temperature = wobble(machine.getBaselineTemperature(), 4.0);
             double vibration = wobble(machine.getBaselineVibration(), 0.8);
             int rpm = 1400 + ThreadLocalRandom.current().nextInt(-40, 40);
+            Instant now = Instant.now();
 
             messagingTemplate.convertAndSend("/topic/telemetry",
-                    new TelemetryMessage(machine.getId(), machine.getName(), temperature, vibration, rpm, Instant.now()));
+                    new TelemetryMessage(machine.getId(), machine.getName(), temperature, vibration, rpm, now));
+
+            if (sampleThisTick) {
+                telemetryReadingRepository.save(TelemetryReading.builder()
+                        .machine(machine)
+                        .temperature(temperature)
+                        .vibration(vibration)
+                        .rpm(rpm)
+                        .recordedAt(now)
+                        .build());
+            }
 
             evaluateThresholds(machine, temperature, vibration);
         }
+    }
+
+    /** Keeps the demo DB from growing without bound; this is a downsampled trend store, not a full time-series archive. */
+    @Scheduled(fixedRateString = "${plantpulse.telemetry.purge-interval-ms:3600000}")
+    @Transactional
+    public void purgeOldReadings() {
+        telemetryReadingRepository.deleteByRecordedAtBefore(Instant.now().minus(retentionHours, ChronoUnit.HOURS));
     }
 
     private double wobble(double baseline, double maxDelta) {

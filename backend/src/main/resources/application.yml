@@ -8,6 +8,9 @@ spring:
 plantpulse:
   telemetry:
     interval-ms: 3000
+    sample-every-n-ticks: 10 # ~1 persisted reading every 30s at the default interval
+    retention-hours: 48
+    purge-interval-ms: 3600000 # 1h
   thresholds:
     temperature-warning: 75.0
     temperature-critical: 90.0

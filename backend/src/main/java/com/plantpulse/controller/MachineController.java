@@ -1,14 +1,18 @@
 package com.plantpulse.controller;
 
 import com.plantpulse.domain.Machine;
+import com.plantpulse.dto.TelemetryMessage;
 import com.plantpulse.exception.ResourceNotFoundException;
 import com.plantpulse.repository.MachineRepository;
+import com.plantpulse.repository.TelemetryReadingRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -17,6 +21,7 @@ import java.util.List;
 public class MachineController {
 
     private final MachineRepository machineRepository;
+    private final TelemetryReadingRepository telemetryReadingRepository;
 
     @GetMapping
     public List<Machine> findAll() {
@@ -27,6 +32,17 @@ public class MachineController {
     public Machine findById(@PathVariable Long id) {
         return machineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
+    }
+
+    @GetMapping("/{id}/telemetry-history")
+    public List<TelemetryMessage> telemetryHistory(@PathVariable Long id) {
+        Machine machine = machineRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Machine not found: " + id));
+
+        Instant since = Instant.now().minus(24, ChronoUnit.HOURS);
+        return telemetryReadingRepository.findByMachineIdAndRecordedAtAfterOrderByRecordedAtAsc(id, since).stream()
+                .map(r -> new TelemetryMessage(machine.getId(), machine.getName(), r.getTemperature(), r.getVibration(), r.getRpm(), r.getRecordedAt()))
+                .toList();
     }
 
     @PostMapping

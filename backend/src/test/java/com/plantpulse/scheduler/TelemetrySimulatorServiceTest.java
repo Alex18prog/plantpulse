@@ -2,12 +2,15 @@ package com.plantpulse.scheduler;
 
 import com.plantpulse.domain.Alert;
 import com.plantpulse.domain.Machine;
+import com.plantpulse.domain.TelemetryReading;
 import com.plantpulse.domain.WorkOrder;
 import com.plantpulse.domain.enums.AlertSeverity;
 import com.plantpulse.domain.enums.MachineStatus;
 import com.plantpulse.dto.AlertMessage;
+import com.plantpulse.dto.TelemetryMessage;
 import com.plantpulse.repository.AlertRepository;
 import com.plantpulse.repository.MachineRepository;
+import com.plantpulse.repository.TelemetryReadingRepository;
 import com.plantpulse.service.WorkOrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,6 +55,9 @@ class TelemetrySimulatorServiceTest {
     private WorkOrderService workOrderService;
 
     @Mock
+    private TelemetryReadingRepository telemetryReadingRepository;
+
+    @Mock
     private SimpMessagingTemplate messagingTemplate;
 
     @InjectMocks
@@ -66,6 +77,8 @@ class TelemetrySimulatorServiceTest {
         ReflectionTestUtils.setField(telemetrySimulatorService, "tempCritical", TEMP_CRITICAL);
         ReflectionTestUtils.setField(telemetrySimulatorService, "vibWarning", VIB_WARNING);
         ReflectionTestUtils.setField(telemetrySimulatorService, "vibCritical", VIB_CRITICAL);
+        ReflectionTestUtils.setField(telemetrySimulatorService, "sampleEveryNTicks", 10);
+        ReflectionTestUtils.setField(telemetrySimulatorService, "retentionHours", 48L);
 
         machine = Machine.builder()
                 .id(1L)
@@ -161,5 +174,52 @@ class TelemetrySimulatorServiceTest {
 
         verify(alertRepository).save(alertCaptor.capture());
         assertThat(alertCaptor.getValue().getSeverity()).isEqualTo(AlertSeverity.CRITICAL);
+    }
+
+    @Test
+    void tick_belowSampleThreshold_broadcastsButDoesNotPersistReading() {
+        when(machineRepository.findAll()).thenReturn(List.of(machine));
+
+        telemetrySimulatorService.tick();
+
+        verify(messagingTemplate).convertAndSend(eq("/topic/telemetry"), any(TelemetryMessage.class));
+        verify(telemetryReadingRepository, never()).save(any());
+    }
+
+    @Test
+    void tick_everyNthTick_persistsSampledReading() {
+        when(machineRepository.findAll()).thenReturn(List.of(machine));
+
+        for (int i = 0; i < 9; i++) {
+            telemetrySimulatorService.tick();
+        }
+        verify(telemetryReadingRepository, never()).save(any());
+
+        telemetrySimulatorService.tick(); // 10th tick: sampled
+
+        verify(telemetryReadingRepository).save(any(TelemetryReading.class));
+    }
+
+    @Test
+    void tick_downMachine_isSkippedEntirely() {
+        machine.setStatus(MachineStatus.DOWN);
+        when(machineRepository.findAll()).thenReturn(List.of(machine));
+
+        for (int i = 0; i < 10; i++) {
+            telemetrySimulatorService.tick();
+        }
+
+        verifyNoInteractions(messagingTemplate, telemetryReadingRepository);
+    }
+
+    @Test
+    void purgeOldReadings_deletesUsingRetentionCutoff() {
+        ArgumentCaptor<Instant> cutoffCaptor = ArgumentCaptor.forClass(Instant.class);
+
+        telemetrySimulatorService.purgeOldReadings();
+
+        verify(telemetryReadingRepository).deleteByRecordedAtBefore(cutoffCaptor.capture());
+        Instant expectedCutoff = Instant.now().minus(48, ChronoUnit.HOURS);
+        assertThat(cutoffCaptor.getValue()).isCloseTo(expectedCutoff, within(5, ChronoUnit.SECONDS));
     }
 }
