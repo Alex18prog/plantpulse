@@ -29,6 +29,15 @@ Most junior portfolios show a CRUD app. This one shows:
 
 ---
 
+## Screenshots
+
+<!-- TODO: add real screenshots/GIF of the running dashboard to screenshots/
+     and reference them here, e.g.:
+     ![Dashboard](screenshots/dashboard.png)
+     Nothing has been added yet — see screenshots/README.md. -->
+
+---
+
 ## Architecture
 
 ```
@@ -101,7 +110,31 @@ than a generic admin dashboard.
 
 ## Running it locally
 
-### Backend
+### Quick start (Docker)
+
+The recommended way to try PlantPulse — one command, Postgres included, no
+local Java/Node toolchain required:
+
+```bash
+cp .env.example .env   # optional — the defaults in docker-compose.yml already work
+docker compose up --build
+```
+
+- Frontend: `http://localhost:8081`
+- Backend API: `http://localhost:8080`
+
+Log in with `admin@plantpulse.dev` / `admin123` (ADMIN) or
+`marta.ruiz@plantpulse.dev` / `tech123` (TECHNICIAN) — same demo accounts as
+local dev, seeded automatically on first boot. See `.env.example` for the
+variables you can override (Postgres credentials, JWT secret, host ports).
+
+### Development
+
+Faster feedback loop than rebuilding containers; useful if you're actively
+working on the code. Runs the backend against an in-memory H2 database
+instead of Postgres.
+
+#### Backend
 ```bash
 cd backend
 ./mvnw spring-boot:run
@@ -112,7 +145,7 @@ active by default) seeded with 4 demo machines, 2 technicians, and 3 spare
 parts. H2 console at `http://localhost:8080/h2-console` (JDBC URL
 `jdbc:h2:mem:plantpulse`, user `sa`, no password).
 
-### Frontend
+#### Frontend
 ```bash
 cd frontend
 npm install
@@ -159,9 +192,9 @@ the commit history shows it growing. Suggested order:
       20 live points
 
 **Phase 4 — Polish for reviewers**
-- [ ] `docker-compose.yml` (Postgres + backend + frontend) so anyone can run
-      `docker compose up` and see it working in one command
-- [ ] GitHub Actions CI: build + test on push
+- [x] `docker-compose.yml` (Postgres + backend + frontend) so anyone can run
+      `docker compose up --build` and see it working in one command
+- [x] GitHub Actions CI: build + test on push
 - [ ] Screenshots/GIF of the live dashboard in this README
 - [ ] Deploy a live demo (e.g. Railway/Render for the backend, Vercel for the
       frontend) and link it here
