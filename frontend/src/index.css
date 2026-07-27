@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* -- PlantPulse control-room palette -- */
+  --color-graphite: #14171a;      /* app background */
+  --color-panel: #1b1f24;         /* card / panel surface */
+  --color-panel-raised: #21262d;  /* nested surface, e.g. table rows */
+  --color-steel: #2a2f36;         /* borders, dividers */
+  --color-steel-light: #363c44;
+
+  --color-signal-green: #4cd08a;  /* operational */
+  --color-signal-amber: #f2a93b;  /* warning */
+  --color-signal-red: #e5484d;    /* critical */
+  --color-data-blue: #5b9bd5;     /* charts, informational readouts */
+
+  --color-ink-100: #eef1f5;       /* primary text */
+  --color-ink-300: #aab2bd;       /* secondary text */
+  --color-ink-500: #6b7280;       /* muted / disabled */
+
+  --font-display: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  background-color: var(--color-graphite);
+  color: var(--color-ink-100);
+  font-family: var(--font-body);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+::selection {
+  background-color: var(--color-signal-amber);
+  color: var(--color-graphite);
+}
+
+/* pulsing status dot, the "signature" motif of the dashboard */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 currentColor; opacity: 0.55; }
+  70%  { box-shadow: 0 0 0 8px transparent; opacity: 0; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
