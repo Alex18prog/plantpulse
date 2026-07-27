@@ -1,11 +1,16 @@
 package com.plantpulse.exception;
 
+import com.plantpulse.config.SecurityConfig;
 import com.plantpulse.controller.MachineController;
 import com.plantpulse.repository.MachineRepository;
+import com.plantpulse.security.JwtService;
+import com.plantpulse.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -18,6 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MachineController.class)
+@Import(SecurityConfig.class)
+@WithMockUser
 class GlobalExceptionHandlerTest {
 
     @Autowired
@@ -25,6 +32,13 @@ class GlobalExceptionHandlerTest {
 
     @MockBean
     private MachineRepository machineRepository;
+
+    // Required by the auto-registered JwtAuthenticationFilter bean, unused by these tests (@WithMockUser bypasses it).
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
 
     @Test
     void resourceNotFoundException_isMappedTo404WithErrorBody() throws Exception {

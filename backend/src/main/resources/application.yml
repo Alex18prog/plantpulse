@@ -13,6 +13,10 @@ plantpulse:
     temperature-critical: 90.0
     vibration-warning: 6.0
     vibration-critical: 9.0
+  security:
+    # Dev-only default; override via PLANTPULSE_SECURITY_JWT_SECRET in prod.
+    jwt-secret: ${PLANTPULSE_JWT_SECRET:dev-only-insecure-secret-do-not-use-in-production-3f8a2c1e}
+    jwt-expiration-ms: 28800000 # 8h, demo-friendly
 
 ---
 spring:
