@@ -124,6 +124,12 @@ within a few seconds as simulated telemetry arrives.
 
 ---
 
+## Known limitations
+
+- WebSocket topics (`/topic/telemetry`, `/topic/alerts`) are not authorized per user — acceptable for this single-tenant demo, but a real multi-tenant system would need per-topic authorization.
+
+---
+
 ## Roadmap
 
 The backend and frontend skeletons above are functional but intentionally
