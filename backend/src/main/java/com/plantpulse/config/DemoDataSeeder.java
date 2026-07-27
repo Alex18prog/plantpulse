@@ -3,13 +3,17 @@ package com.plantpulse.config;
 import com.plantpulse.domain.Machine;
 import com.plantpulse.domain.SparePart;
 import com.plantpulse.domain.Technician;
+import com.plantpulse.domain.User;
 import com.plantpulse.domain.enums.MachineStatus;
+import com.plantpulse.domain.enums.Role;
 import com.plantpulse.domain.enums.TechnicianStatus;
 import com.plantpulse.repository.MachineRepository;
 import com.plantpulse.repository.SparePartRepository;
 import com.plantpulse.repository.TechnicianRepository;
+import com.plantpulse.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,6 +28,8 @@ public class DemoDataSeeder implements CommandLineRunner {
     private final MachineRepository machineRepository;
     private final TechnicianRepository technicianRepository;
     private final SparePartRepository sparePartRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
@@ -55,7 +61,7 @@ public class DemoDataSeeder implements CommandLineRunner {
                 .baselineTemperature(70.0).baselineVibration(4.0)
                 .build());
 
-        technicianRepository.save(Technician.builder()
+        Technician marta = technicianRepository.save(Technician.builder()
                 .name("Marta Ruiz").specialty("Mechanical").email("marta.ruiz@plantpulse.dev")
                 .status(TechnicianStatus.AVAILABLE).build());
 
@@ -71,5 +77,19 @@ public class DemoDataSeeder implements CommandLineRunner {
 
         sparePartRepository.save(SparePart.builder()
                 .name("Bearing 6205-2RS").stockQuantity(20).minStockThreshold(10).unitCost(6.75).build());
+
+        // Demo login accounts so the login flow can be exercised without manual registration.
+        userRepository.save(User.builder()
+                .email("admin@plantpulse.dev")
+                .passwordHash(passwordEncoder.encode("admin123"))
+                .role(Role.ADMIN)
+                .build());
+
+        userRepository.save(User.builder()
+                .email("marta.ruiz@plantpulse.dev")
+                .passwordHash(passwordEncoder.encode("tech123"))
+                .role(Role.TECHNICIAN)
+                .technician(marta)
+                .build());
     }
 }
