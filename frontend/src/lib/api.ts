@@ -1,5 +1,11 @@
 import type { LoginResponse, Machine, SparePart, TelemetryMessage, WorkOrder } from '../types';
 
+// Empty by default — same relative /api/** path this app has always used,
+// proxied same-origin by Vite in dev and by nginx in the Docker image. Only
+// needed when the frontend is served from somewhere that can't proxy to the
+// backend itself, e.g. a static host like GitHub Pages.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
+
 let authToken: string | null = null;
 let onUnauthorized: (() => void) | null = null;
 
@@ -17,7 +23,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (authToken) headers.Authorization = `Bearer ${authToken}`;
 
-  const res = await fetch(`/api${path}`, { headers, ...init });
+  const res = await fetch(`${API_BASE_URL}/api${path}`, { headers, ...init });
 
   if (!res.ok) {
     if (res.status === 401 && onUnauthorized) onUnauthorized();

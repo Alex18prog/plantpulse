@@ -6,6 +6,12 @@ spring:
     active: dev
 
 plantpulse:
+  cors:
+    # Same ALLOWED_ORIGIN env var drives both; each keeps its own current
+    # default so unset behavior is unchanged (REST was locked to localhost,
+    # the WebSocket endpoint already allowed any origin).
+    allowed-origin: ${ALLOWED_ORIGIN:http://localhost:*}
+    ws-allowed-origin: ${ALLOWED_ORIGIN:*}
   telemetry:
     interval-ms: 3000
     sample-every-n-ticks: 10 # ~1 persisted reading every 30s at the default interval

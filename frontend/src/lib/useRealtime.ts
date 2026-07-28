@@ -5,6 +5,10 @@ import type { AlertMessage, TelemetryMessage } from '../types';
 
 const HISTORY_LENGTH = 20;
 
+// Relative "/ws" by default, same as always. Override when the frontend is
+// served somewhere that can't proxy to the backend (see api.ts).
+const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL ?? '/ws';
+
 /**
  * Subscribes to /topic/telemetry and /topic/alerts over STOMP.
  * Keeps a short rolling history per machine so cards can render sparklines
@@ -19,7 +23,7 @@ export function useRealtime() {
 
   useEffect(() => {
     const client = new Client({
-      webSocketFactory: () => new SockJS('/ws') as unknown as WebSocket,
+      webSocketFactory: () => new SockJS(WS_BASE_URL) as unknown as WebSocket,
       reconnectDelay: 3000,
       onConnect: () => {
         setConnected(true);
