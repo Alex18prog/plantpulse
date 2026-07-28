@@ -40,6 +40,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        // Swagger UI's shell is public so it's a one-click open; every actual
+                        // API call still needs a real JWT via its "Authorize" dialog — nothing
+                        // under /api/** is touched by this.
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .exceptionHandling(ex -> ex
