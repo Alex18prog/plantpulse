@@ -2,6 +2,8 @@ package com.plantpulse.controller;
 
 import com.plantpulse.domain.Technician;
 import com.plantpulse.repository.TechnicianRepository;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/technicians")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Technicians", description = "ADMIN only — every endpoint in this controller requires the ADMIN role.")
+@ApiResponse(responseCode = "403", description = "Caller is not ADMIN")
 public class TechnicianController {
 
     private final TechnicianRepository technicianRepository;
