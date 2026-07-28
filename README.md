@@ -202,7 +202,7 @@ the commit history shows it growing. Suggested order:
 **Phase 5 — Nice-to-haves**
 - [ ] Drag-and-drop on the work order board (`@dnd-kit`)
 - [ ] Email/webhook notification on critical alerts
-- [ ] OpenAPI/Swagger docs (`springdoc-openapi`)
+- [x] OpenAPI/Swagger docs (`springdoc-openapi`)
 
 ---
 
