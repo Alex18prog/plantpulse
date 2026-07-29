@@ -6,7 +6,16 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext'
 
-const queryClient = new QueryClient();
+// api.ts's request() already retries on 503/network failure with its own
+// backoff and user-facing messaging; react-query's default retry would just
+// compound on top of that silently, so it's turned off here.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

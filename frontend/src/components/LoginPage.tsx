@@ -3,7 +3,7 @@ import { Activity, LoaderCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, isWakingUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -69,10 +69,17 @@ export function LoginPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-xs font-mono" style={{ color: 'var(--color-signal-red)' }}>
-              {error}
+          {isWakingUp ? (
+            <p className="text-xs font-mono flex items-center gap-1.5" style={{ color: 'var(--color-signal-amber)' }}>
+              <LoaderCircle size={12} className="animate-spin shrink-0" />
+              Waking up the demo server — this can take up to a minute…
             </p>
+          ) : (
+            error && (
+              <p className="text-xs font-mono" style={{ color: 'var(--color-signal-red)' }}>
+                {error}
+              </p>
+            )
           )}
 
           <button
