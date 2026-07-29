@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         // Swagger UI's shell is public so it's a one-click open; every actual
