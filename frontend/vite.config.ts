@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // Only the GitHub Pages deploy job sets this, to "/plantpulse-starter_1/"
+  // Only the GitHub Pages deploy job sets this, to "/plantpulse/"
   // (the repo is served at <user>.github.io/<repo>/, not the domain root).
   // Local dev and the Docker/nginx image both serve from "/", so they're
   // unaffected by leaving this unset.
