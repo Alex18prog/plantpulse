@@ -1,5 +1,7 @@
 # PlantPulse
 
+🇬🇧 English · [🇪🇸 Español](README.es.md)
+
 **A CMMS with live IoT condition monitoring — built to prove I can ship a real full-stack system, not just CRUD.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
@@ -191,8 +193,7 @@ the commit history shows it growing. Suggested order:
       `docker compose up --build` and see it working in one command
 - [x] GitHub Actions CI: build + test on push
 - [ ] Screenshots/GIF of the live dashboard in this README
-- [ ] Deploy a live demo (e.g. Railway/Render for the backend, Vercel for the
-      frontend) and link it here
+- [x] Deploy a live demo (GitHub Pages + Render + Neon) and link it here
 
 **Phase 5 — Nice-to-haves**
 - [ ] Drag-and-drop on the work order board (`@dnd-kit`)
