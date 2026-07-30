@@ -23,7 +23,12 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+          {/* BASE_URL is Vite's own env var reflecting the configured `base` (see
+              vite.config.ts) — "/" normally, "/plantpulse/" for the GitHub Pages
+              build. Without this, routes are matched against the raw pathname
+              ("/plantpulse/"), which none of them match, so <Routes> silently
+              renders nothing once logged in. */}
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <App />
           </BrowserRouter>
         </QueryClientProvider>
