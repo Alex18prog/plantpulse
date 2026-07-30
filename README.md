@@ -1,40 +1,34 @@
 # PlantPulse
 
-**CMMS + real-time IoT condition monitoring for industrial plants.**
+**A CMMS with live IoT condition monitoring — built to prove I can ship a real full-stack system, not just CRUD.**
 
-A maintenance management system (CMMS) — assets, technicians, spare parts, work
-orders — with a live telemetry layer on top: simulated sensors stream
-temperature/vibration data over WebSocket, and the system automatically opens
-a corrective work order the moment a machine drifts out of range. No manual
-data entry needed to see it work.
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=springboot&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-Built as a portfolio project to demonstrate a full Java + Spring Boot + React
-stack on a domain that isn't another todo app or e-commerce clone: industrial
-software / Industry 4.0.
+**[▶ Live demo](https://alex18prog.github.io/plantpulse/)** · login: `admin@plantpulse.dev` / `admin123`
+*(free-tier backend — first load can take up to ~1 min to wake up; the app shows a "waking up" message and retries automatically — see [Known limitations](#known-limitations))*
 
----
+<!-- TODO: replace with a real screenshot or GIF of the live dashboard once captured -->
+<!-- ![PlantPulse dashboard](docs/screenshot-dashboard.png) -->
 
-## Why this project
+## What this is
 
-Most junior portfolios show a CRUD app. This one shows:
+Most junior portfolios show a to-do app or an online store. PlantPulse is industrial maintenance software (a CMMS) — the kind of internal tool a real factory runs on — with a live telemetry layer on top: simulated sensors stream over WebSocket, and the system **reacts on its own**. When a reading drifts out of range, it raises an alert and opens a corrective work order automatically, with no human in the loop.
 
-- A **real business domain** (industrial maintenance) that any plant manager,
-  facilities lead, or ops engineer immediately recognizes.
-- A **live system**, not just a form: WebSocket telemetry, auto-generated
-  alerts, auto-generated corrective work orders — cause and effect the
-  reviewer can watch happen in a 20-second screen recording.
-- A clean separation of concerns across a Spring Boot REST + WebSocket
-  backend and a React + TypeScript frontend, the kind of split real teams
-  use in production.
+- 🔧 **A real domain** — assets, technicians, spare parts, preventive/corrective work orders: a system a plant manager recognizes immediately, not an invented CRUD.
+- 📡 **Actually live** — WebSocket telemetry, auto-generated alerts and work orders. Cause and effect you can watch happen in 20 seconds, not a static screenshot.
+- 🔐 **Production-shaped** — JWT auth with two roles, CORS wired correctly at the Spring Security level (not just a WebMvcConfigurer that silently does nothing), Swagger docs, Docker Compose, CI on GitHub Actions, and a real deploy across three separate free-tier services (GitHub Pages + Render + Neon) wired together end to end.
+- 🧪 **Tested, not just working** — JUnit/Mockito on the backend, Playwright end-to-end on the frontend, verified cross-origin in production, not only on localhost.
 
----
-
-## Screenshots
-
-<!-- TODO: add real screenshots/GIF of the running dashboard to screenshots/
-     and reference them here, e.g.:
-     ![Dashboard](screenshots/dashboard.png)
-     Nothing has been added yet — see screenshots/README.md. -->
+## Quick links
+- 🚀 [Live demo](https://alex18prog.github.io/plantpulse/)
+- 📖 [Architecture & setup](#architecture) — below
+- 🗺️ [Roadmap](#roadmap) — built phase by phase, with a clean commit history
+- ⚠️ [Known limitations](#known-limitations) — the honest list, not hidden
 
 ---
 
