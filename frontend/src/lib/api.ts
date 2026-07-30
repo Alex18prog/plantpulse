@@ -3,8 +3,10 @@ import type { LoginResponse, Machine, SparePart, TelemetryMessage, WorkOrder } f
 // Empty by default — same relative /api/** path this app has always used,
 // proxied same-origin by Vite in dev and by nginx in the Docker image. Only
 // needed when the frontend is served from somewhere that can't proxy to the
-// backend itself, e.g. a static host like GitHub Pages.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
+// backend itself, e.g. a static host like GitHub Pages. Exported so
+// useRealtime.ts can derive the SockJS endpoint from the same host instead
+// of needing its own separate env var.
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 let authToken: string | null = null;
 let onUnauthorized: (() => void) | null = null;

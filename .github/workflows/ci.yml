@@ -40,9 +40,11 @@ jobs:
       - run: npm run build
 
   # Publishes frontend/dist to GitHub Pages. Static hosting only — there's no
-  # backend behind this deploy, so API calls will 404/fail unless VITE_API_BASE_URL
-  # and VITE_WS_BASE_URL (repo variables, Settings > Secrets and variables >
-  # Actions > Variables) point at a real backend deployed elsewhere.
+  # backend behind this deploy, so API/WebSocket calls will fail unless
+  # VITE_API_BASE_URL (repo variable, Settings > Secrets and variables >
+  # Actions > Variables — must be http(s), e.g. https://api.example.com,
+  # never ws(s)) points at a real backend deployed elsewhere. The WebSocket
+  # endpoint is derived from this same value, see useRealtime.ts.
   deploy:
     needs: [backend, frontend]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -68,7 +70,6 @@ jobs:
         env:
           VITE_BASE_PATH: /plantpulse/
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
-          VITE_WS_BASE_URL: ${{ vars.VITE_WS_BASE_URL }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

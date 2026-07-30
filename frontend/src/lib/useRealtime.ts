@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { API_BASE_URL } from './api';
 import type { AlertMessage, TelemetryMessage } from '../types';
 
 const HISTORY_LENGTH = 20;
 
-// Relative "/ws" by default, same as always. Override when the frontend is
-// served somewhere that can't proxy to the backend (see api.ts).
-const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL ?? '/ws';
+// SockJS wants an http(s) URL — it negotiates the WebSocket upgrade itself,
+// so this must NOT be a ws(s):// URL (that throws a SyntaxError inside
+// SockJS's constructor; see the git history for a production incident this
+// caused). Derived from API_BASE_URL rather than its own env var since it's
+// always the same host as the REST API: empty by default gives the
+// existing relative "/ws", otherwise "<API_BASE_URL>/ws".
+const WS_BASE_URL = `${API_BASE_URL}/ws`;
 
 /**
  * Subscribes to /topic/telemetry and /topic/alerts over STOMP.
@@ -22,6 +27,17 @@ export function useRealtime() {
   const clientRef = useRef<Client | null>(null);
 
   useEffect(() => {
+    // Belt-and-suspenders: SockJS throws a SyntaxError inside its constructor for a
+    // ws(s):// URL, and that throw happens inside stompjs's own connection scheduling —
+    // outside React's call stack, so not even an Error Boundary catches it (confirmed by
+    // reproducing the incident this comment refers to). WS_BASE_URL can no longer be
+    // misconfigured this way (see above), but failing loudly instead of silently never
+    // connecting is worth the two lines if that ever changes.
+    if (WS_BASE_URL.startsWith('ws:') || WS_BASE_URL.startsWith('wss:')) {
+      console.error(`useRealtime: WS_BASE_URL must be http(s) or relative, not "${WS_BASE_URL}". Skipping connection.`);
+      return;
+    }
+
     const client = new Client({
       webSocketFactory: () => new SockJS(WS_BASE_URL) as unknown as WebSocket,
       reconnectDelay: 3000,
