@@ -160,6 +160,7 @@ within a few seconds as simulated telemetry arrives.
 ## Known limitations
 
 - WebSocket topics (`/topic/telemetry`, `/topic/alerts`) are not authorized per user — acceptable for this single-tenant demo, but a real multi-tenant system would need per-topic authorization.
+- The backend is deployed on Render's free tier, which spins down after 15 minutes of no traffic. The first request after that can take up to ~1 minute to respond (JVM boot on a 0.1 CPU instance) — the app itself handles this with a "waking up" message and automatic retry, no action needed.
 
 ---
 
