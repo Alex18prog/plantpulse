@@ -14,8 +14,7 @@
 **[▶ Live demo](https://alex18prog.github.io/plantpulse/)** · login: `admin@plantpulse.dev` / `admin123`
 *(free-tier backend — first load can take up to ~1 min to wake up; the app shows a "waking up" message and retries automatically — see [Known limitations](#known-limitations))*
 
-<!-- TODO: replace with a real screenshot or GIF of the live dashboard once captured -->
-<!-- ![PlantPulse dashboard](docs/screenshot-dashboard.png) -->
+![PlantPulse dashboard](screenshots/plantpulse-dashboard-demo.gif)
 
 ## What this is
 

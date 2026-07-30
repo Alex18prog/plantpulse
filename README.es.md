@@ -14,8 +14,7 @@
 **[▶ Demo en vivo](https://alex18prog.github.io/plantpulse/)** · usuario: `admin@plantpulse.dev` / `admin123`
 *(backend en un plan gratuito — la primera carga puede tardar hasta ~1 min en despertar; la propia app muestra un mensaje de "despertando" y reintenta automáticamente — ver [Limitaciones conocidas](#limitaciones-conocidas))*
 
-<!-- TODO: sustituir por una captura o GIF real del dashboard en vivo cuando esté disponible -->
-<!-- ![Dashboard de PlantPulse](docs/screenshot-dashboard.png) -->
+![Dashboard de PlantPulse](screenshots/plantpulse-dashboard-demo.gif)
 
 ## Qué es esto
 
